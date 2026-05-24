@@ -1,379 +1,354 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nossa Roleta do Amor ❤️</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #ffe3e3 0%, #fbc2eb 100%);
-            min-height: 100vh;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-            overflow-x: hidden;
-        }
-
-        h1 {
-            color: #d63031;
-            text-align: center;
-            margin-bottom: 5px;
-            font-size: 26px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-
-        p {
-            color: #4a4a4a;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 16px;
-        }
-
-        #tela-inicial {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #ffe3e3 0%, #fbc2eb 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-        }
-
-        .btn-principal {
-            background-color: #d63031;
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 20px;
-            font-weight: bold;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(214, 48, 49, 0.4);
-            transition: transform 0.2s;
-        }
-
-        .btn-principal:hover {
-            transform: scale(1.05);
-        }
-
-        #conteudo-jogo {
-            display: none; 
-            width: 100%;
-            max-width: 420px;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-        }
-
-        /* Container da Roleta e da Seta */
-        .roleta-container {
-            position: relative;
-            width: 340px;
-            height: 340px;
-            margin: 30px auto;
-            user-select: none;
-            touch-action: none; /* Impede o scroll da página ao arrastar o dedo na roleta */
-        }
-
-        /* Seta Indicadora Superior */
-        .seta {
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-top: 30px solid #d63031;
-            z-index: 5;
-            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.2));
-        }
-
-        /* Canvas onde a roleta é desenhada */
-        #roleta {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            cursor: grab;
-        }
-
-        #roleta:active {
-            cursor: grabbing;
-        }
-
-        /* Caixa de Resultado do Desafio */
-        #resultado {
-            margin-top: 20px;
-            min-height: 60px;
-            background-color: white;
-            border: 3px solid #ff7675;
-            border-radius: 15px;
-            padding: 15px;
-            width: 85%;
-            box-sizing: border-box;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-            color: #2d3436;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
-        }
-
-        .ganhou {
-            transform: scale(1.05);
-            animation: pulsar 0.5s ease alternate infinite;
-        }
-
-        @keyframes pulsar {
-            from { border-color: #ff7675; }
-            to { border-color: #d63031; box-shadow: 0 4px 15px rgba(214, 48, 49, 0.3); }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sintonia Picante </title>
+<!-- Firebase App e Realtime Database (SDK v9 Compat) -->
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+<!-- Biblioteca de Confetes -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+body {
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+background: linear-gradient(135deg, #1a0813 0%, #3a001a 100%);
+color: #fff;
+min-height: 100vh;
+margin: 0;
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 20px;
+box-sizing: border-box;
+}
+h1 { color: #ff3366; text-align: center; text-shadow: 0 0 10px rgba(255,51,102,0.5); font-size: 24px; }
+h3 { margin: 5px 0; color: #ff8fa3; }
+p { color: #cccccc; text-align: center; font-size: 14px; }
+.card {
+background: rgba(255, 255, 255, 0.05);
+backdrop-filter: blur(10px);
+border: 1px solid rgba(255, 51, 102, 0.2);
+border-radius: 20px;
+padding: 20px;
+width: 100%;
+max-width: 400px;
+box-sizing: border-box;
+text-align: center;
+box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+.btn {
+background: linear-gradient(90deg, #ff3366, #ff0044);
+color: white; border: none; padding: 12px 30px;
+font-size: 16px; font-weight: bold; border-radius: 25px;
+cursor: pointer; margin: 10px 0; width: 100%;
+box-shadow: 0 4px 15px rgba(255, 51, 102, 0.4);
+transition: 0.2s;
+}
+.btn:disabled { background: #444; box-shadow: none; cursor: not-allowed; }
+/* Representação Estilizada de Corpo */
+.corpo-container {
+width: 130px; height: 260px; margin: 15px auto;
+border: 2px dashed rgba(255,255,255,0.2);
+border-radius: 60px; position: relative;
+background: rgba(0,0,0,0.2);
+}
+.corpo-label {
+position: absolute; width: 100%; text-align: center;
+font-size: 12px; font-weight: bold; text-transform: uppercase;
+letter-spacing: 1px; color: #ff8fa3; bottom: -25px;
+}
+.silhueta {
+font-size: 90px; line-height: 240px; opacity: 0.7;
+animation: pulsar-corpo 2s infinite alternate;
+}
+@keyframes pulsar-corpo {
+from { transform: scale(0.98); opacity: 0.6; }
+to { transform: scale(1.02); opacity: 0.9; }
+}
+/* Lista de Ações */
+.lista-acoes { text-align: left; margin: 20px 0; }
+.acao-item {
+background: rgba(255,255,255,0.08);
+padding: 12px; margin-bottom: 8px; border-radius: 10px;
+cursor: pointer; display: flex; align-items: center;
+border: 1px solid transparent; transition: 0.2s;
+}
+.acao-item:hover { background: rgba(255,51,102,0.1); }
+.acao-item.selecionada {
+background: rgba(255,51,102,0.2);
+border-color: #ff3366;
+}
+.acao-item input { margin-right: 12px; transform: scale(1.2); }
+/* Bloqueio de Tela */
+.bloqueio {
+position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+background: rgba(10, 3, 8, 0.9); z-index: 100;
+display: flex; flex-direction: column; justify-content: center;
+align-items: center; padding: 20px; text-align: center;
+box-sizing: border-box;
+}
+/* Status de Feedback */
+.status-msg {
+font-weight: bold; font-size: 18px; margin: 15px 0;
+padding: 10px; border-radius: 10px;
+}
+.erro { background: rgba(255, 0, 0, 0.2); color: #ff4d4d; }
+.sucesso { background: rgba(0, 255, 0, 0.2); color: #4dff4d; }
+</style>
 </head>
 <body>
-
-    <audio id="musica-fundo" loop preload="auto" src="JeTAime.mp3"></audio>
-    <audio id="som-clique" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-84.wav"></audio>
-
-    <div id="tela-inicial">
-        <h1 style="margin-bottom: 25px;">Prontos para girar? ❤️</h1>
-        <button class="btn-principal" onclick="iniciarJogo()">Começar</button>
-    </div>
-
-    <div id="conteudo-jogo">
-        <h1>Roleta do Amor ❤️</h1>
-        <p>Passe o dedo ou arraste a roleta para girar!</p>
-        
-        <div class="roleta-container">
-            <div class="seta"></div>
-            <canvas id="roleta" width="400" height="400"></canvas>
-        </div>
-
-        <div id="resultado">Gire a roleta para descobrir o desafio... 🔥</div>
-    </div>
-
-    <script>
-        const desafios = [
-            "Tire uma peça de roupa 🔞",
-            "Massagem de 3 minutos 💆‍♂️",
-            "Beijo de cinema (30s) 💋",
-            "Posição que você mais gosta 🔥",
-            "Tome um gole da bebida 🥂",
-            "1 min de silêncio + carinho 🤫",
-            "De conchinha sacana 😉",
-            "Sussurre um desejo secreto 💬"
-        ];
-
-        // Cores alternadas românticas para os setores da roleta
-        const cores = ["#ff7675", "#d63031", "#ff8a8a", "#c23616", "#e84118", "#ff4d4d", "#b32424", "#ff6b6b"];
-
-        const canvas = document.getElementById('roleta');
-        const ctx = canvas.getContext('2d');
-        const resultadoDiv = document.getElementById('resultado');
-        const musicaFundo = document.getElementById('musica-fundo');
-        const somClique = document.getElementById('som-clique');
-
-        musicaFundo.volume = 0.3;
-        somClique.volume = 0.6;
-
-        let anguloAtual = 0;
-        let velocidadeRotacao = 0;
-        let estaArrastando = false;
-        let anguloInicialMouse = 0;
-        let ultimosAngulos = [];
-        let idAnimacao;
-
-        function iniciarJogo() {
-            document.getElementById('tela-inicial').style.display = 'none';
-            document.getElementById('conteudo-jogo').style.display = 'flex';
-            
-            tocarMusica();
-            desenharRoleta();
-            registrarEventos();
-            atualizarFisica();
-        }
-
-        function tocarMusica() {
-            musicaFundo.play().catch(() => {
-                document.addEventListener('click', function triggerAudio() {
-                    musicaFundo.play();
-                    document.removeEventListener('click', triggerAudio);
-                }, { once: true });
-            });
-        }
-
-        // Desenha a roleta no Canvas dividida em fatias perfeitas
-        function desenharRoleta() {
-            const qtdSetores = desafios.length;
-            const tamanhoSetor = (2 * Math.PI) / qtdSetores;
-            const centro = canvas.width / 2;
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            for (let i = 0; i < qtdSetores; i++) {
-                const anguloSetor = anguloAtual + (i * tamanhoSetor);
-                
-                // Desenha a fatia colorida
-                ctx.beginPath();
-                ctx.fillStyle = cores[i % cores.length];
-                ctx.moveTo(centro, centro);
-                ctx.arc(centro, centro, centro - 5, anguloSetor, anguloSetor + tamanhoSetor);
-                ctx.lineTo(centro, centro);
-                ctx.fill();
-                ctx.strokeStyle = '#ffffff';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-
-                // Desenha o texto do desafio dentro da fatia
-                ctx.save();
-                ctx.translate(centro, centro);
-                ctx.rotate(anguloSetor + tamanhoSetor / 2);
-                ctx.textAlign = "right";
-                ctx.fillStyle = "#ffffff";
-                ctx.font = "bold 13px 'Segoe UI', sans-serif";
-                
-                // Encurta textos muito longos para caber na fatia se necessário
-                let texto = desafios[i];
-                if(texto.length > 25) texto = texto.substring(0,22) + "...";
-                
-                ctx.fillText(texto, centro - 25, 5);
-                ctx.restore();
-            }
-
-            // Círculo central estético (Eixo da Roleta)
-            ctx.beginPath();
-            ctx.arc(centro, centro, 25, 0, 2 * Math.PI);
-            ctx.fillStyle = '#ffffff';
-            ctx.fill();
-            ctx.strokeStyle = '#ff7675';
-            ctx.lineWidth = 3;
-            ctx.stroke();
-
-            // Coraçãozinho no centro exato
-            ctx.fillStyle = '#d63031';
-            ctx.font = "18px Arial";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText("❤️", centro, centro + 1);
-        }
-
-        // Retorna o ângulo absoluto baseado na posição do toque em relação ao centro da roleta
-        function obterAnguloDoToque(e) {
-            const rect = canvas.getBoundingClientRect();
-            const clienteX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clienteY = e.touches ? e.touches[0].clientY : e.clientY;
-            
-            const x = clienteX - rect.left - rect.width / 2;
-            const y = clienteY - rect.top - rect.height / 2;
-            return Math.atan2(y, x);
-        }
-
-        function registrarEventos() {
-            // Unifica eventos de Mouse (Desktop) e Touch (Mobile)
-            const iniciarArrasto = (e) => {
-                estaArrastando = true;
-                velocidadeRotacao = 0;
-                resultadoDiv.classList.remove('ganhou');
-                resultadoDiv.innerText = "Girando... 🔥";
-                anguloInicialMouse = obterAnguloDoToque(e) - anguloAtual;
-                ultimosAngulos = [{ tempo: Date.now(), angulo: anguloAtual }];
-            };
-
-            const movendoArrasto = (e) => {
-                if (!estaArrastando) return;
-                
-                const anguloDoToque = obterAnguloDoToque(e);
-                anguloAtual = anguloDoToque - anguloInicialMouse;
-                
-                // Registra posições recentes para calcular a velocidade ao soltar
-                ultimosAngulos.push({ tempo: Date.now(), angulo: anguloAtual });
-                if (ultimosAngulos.length > 5) ultimosAngulos.shift();
-
-                desenharRoleta();
-            };
-
-            const finalizarArrasto = () => {
-                if (!estaArrastando) return;
-                estaArrastando = false;
-
-                if (ultimosAngulos.length < 2) return;
-                
-                // Calcula a velocidade do arremesso baseado nos últimos movimentos registrados
-                const primeiro = ultimosAngulos[0];
-                const ultimo = ultimosAngulos[ultimosAngulos.length - 1];
-                const dt = (ultimo.tempo - primeiro.tempo) / 1000; // em segundos
-                
-                if (dt > 0) {
-                    velocidadeRotacao = (ultimo.angulo - primeiro.angulo) / dt;
-                    // Limita a velocidade máxima para não quebrar a física do giro
-                    const velMaxima = 45;
-                    velocidadeRotacao = Math.max(-velMaxima, Math.min(velMaxima, velocidadRotacao));
-                }
-            };
-
-            canvas.addEventListener('mousedown', iniciarArrasto);
-            canvas.addEventListener('mousemove', movendoArrasto);
-            window.addEventListener('mouseup', finalizarArrasto);
-
-            canvas.addEventListener('touchstart', iniciarArrasto, { passive: true });
-            canvas.addEventListener('touchmove', movendoArrasto, { passive: true });
-            window.addEventListener('touchend', finalizarArrasto);
-        }
-
-        // Loop de animação que processa a inércia e desaceleração progressiva da roleta
-        function atualizarFisica() {
-            if (!estaArrastando && Math.abs(velocidadeRotacao) > 0.01) {
-                anguloAtual += velocidadeRotacao * 0.016; // Aproximação de 60fps
-                velocidadeRotacao *= 0.965; // Coeficiente de atrito/frenagem mecânica natural
-
-                // Toca pequenos estalos mecânicos de som enquanto a roleta passa pelas fatias
-                if (Math.abs(velocidadeRotacao) > 1 && Math.floor(anguloAtual * 4) % 2 === 0) {
-                    somClique.currentTime = 0;
-                    somClique.play().catch(() => {});
-                }
-
-                desenharRoleta();
-
-                // Quando a roleta para quase por completo
-                if (Math.abs(velocidadeRotacao) <= 0.01) {
-                    velocidadeRotacao = 0;
-                    exibirResultado();
-                }
-            }
-            idAnimacao = requestAnimationFrame(atualizarFisica);
-        }
-
-        // Calcula matematicamente qual desafio caiu baseado na seta de cima (ângulo -90° ou -PI/2)
-        function exibirResultado() {
-            const qtdSetores = desafios.length;
-            const tamanhoSetor = (2 * Math.PI) / qtdSetores;
-
-            // Normaliza o ângulo acumulado para mantê-lo na escala entre 0 e 2*PI
-            let anguloNormalizado = (-anguloAtual - Math.PI / 2) % (2 * Math.PI);
-            if (anguloNormalizado < 0) anguloNormalizado += (2 * Math.PI);
-
-            const indiceGanhador = Math.floor(anguloNormalizado / tamanhoSetor) % qtdSetores;
-            
-            resultadoDiv.innerText = desafios[indiceGanhador];
-            resultadoDiv.classList.add('ganhou');
-
-            // Toca um som de confirmação mais nítido ao parar
-            somClique.currentTime = 0;
-            somClique.play().catch(() => {});
-        }
-    </script>
+<div class="card" id="setup-room">
+<h1>Sintonia Picante </h1>
+<p>Escolha quem você é para conectar os celulares:</p>
+<button class="btn" onclick="escolherJogador(1)">Homem (Jogador 1)</button>
+<button class="btn" onclick="escolherJogador(2)" style="background: linear-gradient(90deg, #e056fd, #be2edd);">Mulher (Jogador 2)</button>
+</div>
+<!-- Tela do Jogo Principal -->
+<div class="card" id="jogo-container" style="display: none;">
+<h1 id="titulo-nivel">Nível 1: Provocação</h1>
+<!-- Exibição do Corpo Oposto -->
+<div class="corpo-container">
+<div class="silhueta" id="icone-corpo"> </div>
+<div class="corpo-label" id="label-corpo">Corpo Dela</div>
+</div>
+<div style="margin-top: 35px;">
+<h3 id="instrucao-turno">Sua vez de escolher:</h3>
+<div class="lista-acoes" id="container-opcoes"><!-- Injetado por JS --></div>
+<div id="feedback-resultado"></div>
+<button class="btn" id="btn-enviar" onclick="enviarEscolha()">Confirmar Ação</button>
+<button class="btn" id="btn-proximo" onclick="avancarNivel()" style="display: none; background: #22c55e;">Avançar de Nível </button>
+</div>
+</div>
+<!-- Telas de Bloqueio Dinâmicas -->
+<div class="bloqueio" id="tela-bloqueio" style="display: none;">
+<h2 style="color: #ff3366;">Aguarde... </h2>
+<p id="msg-bloqueio">O outro jogador está realizando a escolha dele no celular.</p>
+</div>
+<script>
+// ==========================================
+// SUBSTITUA COM AS SUAS CREDENCIAIS DO FIREBASE AQUI
+// ==========================================
+const firebaseConfig = {
+apiKey: "SUA_API_KEY",
+authDomain: "SEU_PROJECT_ID.firebaseapp.com",
+databaseURL: "https://SEU_PROJECT_ID-default-rtdb.firebaseio.com",
+projectId: "SEU_PROJECT_ID",
+storageBucket: "SEU_PROJECT_ID.appspot.com",
+messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+appId: "SEU_APP_ID"
+};
+// Inicializa o Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const jogoRef = db.ref("sintonia_picante");
+// Banco de Dados das 3 Listas de Ações
+const niveis = {
+1: {
+nome: "Nível 1: Provocação ",
+opcoes: [
+"Dar um beijo de 10 segundos no pescoço",
+"Fazer uma massagem rápida nos ombros",
+"Sussurrar uma fantasia safada no ouvido",
+"Dar uma mordida leve na orelha"
+]
+},
+2: {
+nome: "Nível 2: Desejo ",
+opcoes: [
+"Tirar uma peça de roupa usando apenas os dentes",
+"Dar um beijo quente descendo até a barriga",
+"Ficar de conchinha bem colado por 1 minuto",
+"Passar os lábios lentamente pelo corpo todo"
+]
+},
+3: {
+nome: "Nível 3: Delírio Total ",
+opcoes: [
+"Tirar a calcinha/cueca com a boca",
+"Beijar intensamente na posição favorita",
+"Fazer um carinho super ousado por baixo das roupas",
+"Consumar o desejo do momento sem regras"
+]
+}
+};
+let meuJogador = null;
+let nivelAtual = 1;
+let acaoSelecionadaIndice = null;
+// Inicia o Fluxo escolhendo o papel
+function escolherJogador(num) {
+meuJogador = num;
+document.getElementById("setup-room").style.display = "none";
+document.getElementById("jogo-container").style.display = "block";
+// Configura o visual do corpo espelhado
+if(meuJogador === 1) {
+document.getElementById("icone-corpo").innerText = " ";
+document.getElementById("label-corpo").innerText = "Corpo Dela";
+} else {
+document.getElementById("icone-corpo").innerText = " ";
+document.getElementById("label-corpo").innerText = "Corpo Dele";
+}
+// Garante que o banco comece limpo no primeiro login
+if(meuJogador === 1) {
+jogoRef.set({
+nivel: 1,
+propositor: 1, // Começa com o Jogador 1 decidindo o que fazer no 2
+escolhaJ1: -1,
+escolhaJ2: -1,
+status: "jogando"
+});
+}
+ouvirBancoDeDados();
+}
+// Monitora as ações do outro celular em tempo real via Firebase
+function ouvirBancoDeDados() {
+jogoRef.on("value", (snapshot) => {
+const dados = snapshot.val();
+if (!dados) return;
+nivelAtual = dados.nivel;
+document.getElementById("titulo-nivel").innerText = niveis[nivelAtual].nome;
+// Fluxo de gerenciamento de telas baseado no estado do Banco
+if (dados.status === "sucesso") {
+mostrarSucesso();
+return;
+}
+if (dados.status === "erro") {
+mostrarErro();
+return;
+}
+renderizarListaAcoes();
+// Lógica de quem joga e quem espera
+const euSouOPropositor = (meuJogador === dados.propositor);
+if (euSouOPropositor) {
+// Turno A: Eu proponho o que QUERO fazer
+if (meuJogador === 1 && dados.escolhaJ1 === -1) {
+liberarMinhaTela("O que você quer FAZER no corpo dela?");
+} else if (meuJogador === 2 && dados.escolhaJ2 === -1) {
+liberarMinhaTela("O que você quer FAZER no corpo dele?");
+} else {
+bloquearMinhaTela("Aguardando ela/ele adivinhar o que você escolheu...");
+}
+} else {
+// Turno B: Eu adivinho o que o outro quer que eu faça / quer fazer em mim
+if (dados.propositor === 1 && dados.escolhaJ1 !== -1 && dados.escolhaJ2 === -1) {
+liberarMinhaTela("O que você acha que ele quer FAZER em você?");
+} else if (dados.propositor === 2 && dados.escolhaJ2 !== -1 && dados.escolhaJ1 === -1) {
+liberarMinhaTela("O que você acha que ela quer que você FAÇA nela?");
+} else {
+bloquearMinhaTela("Aguardando o outro jogador selecionar a ação do turno...");
+}
+}
+});
+}
+function renderizarListaAcoes() {
+const container = document.getElementById("container-opcoes");
+container.innerHTML = "";
+const opcoes = niveis[nivelAtual].opcoes;
+opcoes.forEach((opcao, indice) => {
+const div = document.createElement("div");
+div.className = "acao-item";
+div.onclick = () => selecionarOpcao(indice, div);
+div.innerHTML = `<input type="radio" name="opcoes" id="opt-${indice}" ${acaoSelecionadaIndice === indice ? 'checked' : ''}> <label>${opcao}</label>`;
+container.appendChild(div);
+});
+}
+function selecionarOpcao(indice, elemento) {
+acaoSelecionadaIndice = indice;
+document.querySelectorAll(".acao-item").forEach(el => el.classList.remove("selecionada"));
+elemento.classList.add("selecionada");
+}
+function liberarMinhaTela(instrucao) {
+document.getElementById("tela-bloqueio").style.display = "none";
+document.getElementById("instrucao-turno").innerText = instrucao;
+document.getElementById("btn-enviar").disabled = false;
+}
+function bloquearMinhaTela(mensagem) {
+document.getElementById("tela-bloqueio").style.display = "flex";
+document.getElementById("msg-bloqueio").innerText = mensagem;
+}
+// Envia o clique ao Firebase e calcula o Match
+function enviarEscolha() {
+if (acaoSelecionadaIndice === null) {
+alert("Por favor, selecione uma ação antes!");
+return;
+}
+if (meuJogador === 1) {
+jogoRef.update({ escolhaJ1: acaoSelecionadaIndice }, verificarResultado);
+} else {
+jogoRef.update({ escolhaJ2: acaoSelecionadaIndice }, verificarResultado);
+}
+document.getElementById("btn-enviar").disabled = true;
+}
+function verificarResultado() {
+jogoRef.once("value", (snapshot) => {
+const dados = snapshot.val();
+// Se ambos responderam
+if (dados.escolhaJ1 !== -1 && dados.escolhaJ2 !== -1) {
+if (dados.escolhaJ1 === dados.escolhaJ2) {
+// ACERTARAM!
+jogoRef.update({ status: "sucesso" });
+} else {
+// ERRARAM! Alterna a liderança da rodada (Propositor muda)
+const proximoPropositor = dados.propositor === 1 ? 2 : 1;
+jogoRef.update({ status: "erro" });
+setTimeout(() => {
+jogoRef.update({
+escolhaJ1: -1,
+escolhaJ2: -1,
+propositor: proximoPropositor,
+status: "jogando"
+});
+acaoSelecionadaIndice = null;
+}, 3000); // Exibe o erro por 3 segundos antes de resetar
+}
+}
+});
+}
+function mostrarSucesso() {
+document.getElementById("tela-bloqueio").style.display = "none";
+const feedback = document.getElementById("feedback-resultado");
+const acaoRealizada = niveis[nivelAtual].opcoes[acaoSelecionadaIndice];
+feedback.innerHTML = `<div class="status-msg sucesso"> SINTONIA CONFIRMADA! <br><br>Realizem a ação:<br><b>"${acaoRealizada}"</b></div>`;
+// Efeitos de Sucesso
+if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 400]);
+dispararConfetes();
+document.getElementById("btn-enviar").style.display = "none";
+// Apenas libera o botão para ir para o próximo nível se houver um próximo nível
+if (nivelAtual < 3) {
+document.getElementById("btn-proximo").style.display = "block";
+} else {
+feedback.innerHTML += "<div style='color:#ff3366; font-weight:bold; margin-top:20px;'>Vocês completaram o último nível! O resto é com vocês... </div>";
+}
+}
+function mostrarErro() {
+document.getElementById("tela-bloqueio").style.display = "none";
+document.getElementById("feedback-resultado").innerHTML = `<div class="status-msg erro"> Não foi dessa vez...<br><span style="font-size:12px;">As mentes (ou desejos) não se alinharam. Mudando a liderança!</span></div>`;
+document.getElementById("btn-enviar").disabled = true;
+}
+function avancarNivel() {
+// Avança o nível e reseta os parâmetros do turno no Firebase
+jogoRef.update({
+nivel: nivelAtual + 1,
+propositor: 1, // Volta para o J1 iniciar o novo painel
+escolhaJ1: -1,
+escolhaJ2: -1,
+status: "jogando"
+});
+// Limpa o layout local
+acaoSelecionadaIndice = null;
+document.getElementById("feedback-resultado").innerHTML = "";
+document.getElementById("btn-proximo").style.display = "none";
+document.getElementById("btn-enviar").style.display = "block";
+}
+function dispararConfetes() {
+const duration = 3 * 1000;
+const end = Date.now() + duration;
+(function frame() {
+confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0, y:0.8 }, colors: ['#ff3366', '#ffffff'] });
+confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1, y:0.8 }, colors: ['#ff3366', '#ffffff'] });
+if (Date.now() < end) requestAnimationFrame(frame);
+}());
+}
+</script>
 </body>
 </html>
