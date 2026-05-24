@@ -46,6 +46,14 @@ box-shadow: 0 4px 15px rgba(255, 51, 102, 0.4);
 transition: 0.2s;
 }
 .btn:disabled { background: #444; box-shadow: none; cursor: not-allowed; }
+.input-sala {
+width: 100%; padding: 12px 20px; margin: 15px 0;
+border-radius: 25px; border: 1px solid rgba(255, 51, 102, 0.5);
+background: rgba(0, 0, 0, 0.3); color: #fff;
+font-size: 16px; text-align: center; box-sizing: border-box;
+outline: none;
+}
+.input-sala:focus { border-color: #ff3366; box-shadow: 0 0 10px rgba(255,51,102,0.3); }
 /* Representação Estilizada de Corpo */
 .corpo-container {
 width: 130px; height: 260px; margin: 15px auto;
@@ -59,10 +67,7 @@ position: absolute; width: 100%; text-align: center;
 font-size: 12px; font-weight: bold; text-transform: uppercase;
 letter-spacing: 1px; color: #ff8fa3; bottom: -25px;
 }
-.silhueta {
-font-size: 80px; opacity: 0.7;
-animation: pulsar-corpo 2s infinite alternate;
-}
+.silhueta { font-size: 80px; opacity: 0.7; animation: pulsar-corpo 2s infinite alternate; }
 @keyframes pulsar-corpo {
 from { transform: scale(0.95); opacity: 0.6; }
 to { transform: scale(1.05); opacity: 0.9; }
@@ -76,10 +81,7 @@ cursor: pointer; display: flex; align-items: center;
 border: 1px solid transparent; transition: 0.2s;
 }
 .acao-item:hover { background: rgba(255,51,102,0.1); }
-.acao-item.selecionada {
-background: rgba(255,51,102,0.2);
-border-color: #ff3366;
-}
+.acao-item.selecionada { background: rgba(255,51,102,0.2); border-color: #ff3366; }
 .acao-item input { margin-right: 12px; transform: scale(1.2); }
 /* Bloqueio de Tela */
 .bloqueio {
@@ -89,26 +91,27 @@ display: flex; flex-direction: column; justify-content: center;
 align-items: center; padding: 20px; text-align: center;
 box-sizing: border-box;
 }
-/* Status de Feedback */
-.status-msg {
-font-weight: bold; font-size: 18px; margin: 15px 0;
-padding: 10px; border-radius: 10px;
-}
+.status-msg { font-weight: bold; font-size: 18px; margin: 15px 0; padding: 10px; border-radius: 10px; }
 .erro { background: rgba(255, 0, 0, 0.2); color: #ff4d4d; border: 1px solid rgba(255,0,0,0.4); }
 .sucesso { background: rgba(0, 255, 0, 0.2); color: #4dff4d; border: 1px solid rgba(0,255,0,0.4); }
+.info-sala { font-size: 11px; color: #ff8fa3; margin-top: -10px; margin-bottom: 15px; opacity: 0.7; }
 </style>
 </head>
 <body>
 
+<!-- Tela 1: Criação / Acesso à Sala -->
 <div class="card" id="setup-room">
 <h1>Sintonia Picante 🔥</h1>
-<p>Escolha quem você é para conectar os celulares:</p>
-<button class="btn" onclick="escolherJogador(1)">Homem (Jogador 1)</button>
-<button class="btn" onclick="escolherJogador(2)" style="background: linear-gradient(90deg, #e056fd, #be2edd);">Mulher (Jogador 2)</button>
+<p>Crie uma senha ou digite a mesma senha que o seu parceiro(a) escolheu:</p>
+<input type="text" id="input-chave-sala" class="input-sala" placeholder="Ex: amor123 ou 4589" maxlength="20">
+<p style="font-size:12px; margin-bottom:20px;">Escolha quem você é nesta sala:</p>
+<button class="btn" onclick="conectarSala(1)">Homem (Jogador 1)</button>
+<button class="btn" onclick="conectarSala(2)" style="background: linear-gradient(90deg, #e056fd, #be2edd);">Mulher (Jogador 2)</button>
 </div>
 
 <!-- Tela do Jogo Principal -->
 <div class="card" id="jogo-container" style="display: none;">
+<div class="info-sala" id="exibir-id-sala">SALA: -</div>
 <h1 id="titulo-nivel">Nível 1: Provocação</h1>
 <!-- Exibição do Corpo Oposto -->
 <div class="corpo-container">
@@ -143,7 +146,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-const jogoRef = db.ref("sintonia_picante");
+let jogoRef = null; // Será definido dinamicamente com o nome da sala
 
 const niveis = {
 1: {
@@ -180,29 +183,51 @@ let nivelAtual = 1;
 let acaoSelecionadaIndice = null;
 let bloqueioTemporarioErro = false;
 
-function escolherJogador(num) {
-meuJogador = num;
-document.getElementById("setup-room").style.display = "none";
-document.getElementById("jogo-container").style.display = "block";
+// Função responsável por isolar a sala baseada na senha fornecida
+function conectarSala(num) {
+  const chaveSalaInput = document.getElementById("input-chave-sala").value.trim();
+  
+  if (!chaveSalaInput) {
+    alert("Por favor, digite uma senha/código para a sala primeiro!");
+    return;
+  }
+  
+  // Limpa caracteres especiais da senha para evitar quebras no banco de dados
+  const nomeSalaLimpo = chaveSalaInput.toLowerCase().replace(/[^a-z0-9]/g, "_");
+  
+  meuJogador = num;
+  
+  // Define a referência dinamicamente no Firebase: salas/nome_da_senha
+  jogoRef = db.ref("salas_sintonia/" + nomeSalaLimpo);
+  
+  document.getElementById("exibir-id-sala").innerText = "SALA PRIVADA: " + chaveSalaInput.toUpperCase();
+  document.getElementById("setup-room").style.display = "none";
+  document.getElementById("jogo-container").style.display = "block";
 
-if(meuJogador === 1) {
-document.getElementById("icone-corpo").innerText = "💃";
-document.getElementById("label-corpo").innerText = "Corpo Dela";
-} else {
-document.getElementById("icone-corpo").innerText = "🕺";
-document.getElementById("label-corpo").innerText = "Corpo Dele";
-}
+  if(meuJogador === 1) {
+    document.getElementById("icone-corpo").innerText = "💃";
+    document.getElementById("label-corpo").innerText = "Corpo Dela";
+  } else {
+    document.getElementById("icone-corpo").innerText = "🕺";
+    document.getElementById("label-corpo").innerText = "Corpo Dele";
+  }
 
-if(meuJogador === 1) {
-jogoRef.set({
-nivel: 1,
-propositor: 1,
-escolhaJ1: -1,
-escolhaJ2: -1,
-status: "jogando"
-});
-}
-ouvirBancoDeDados();
+  // Se for o Jogador 1, ele inicia os dados padrão se a sala estiver vazia
+  if(meuJogador === 1) {
+    jogoRef.once("value").then((snapshot) => {
+      if(!snapshot.exists()) {
+        jogoRef.set({
+          nivel: 1,
+          propositor: 1,
+          escolhaJ1: -1,
+          escolhaJ2: -1,
+          status: "jogando"
+        });
+      }
+    });
+  }
+  
+  ouvirBancoDeDados();
 }
 
 function ouvirBancoDeDados() {
@@ -210,7 +235,6 @@ jogoRef.on("value", (snapshot) => {
 const dados = snapshot.val();
 if (!dados) return;
 
-// Se a tela estiver congelada mostrando o erro de 3 segundos, ignora atualizações temporárias
 if (bloqueioTemporarioErro) return;
 
 nivelAtual = dados.nivel;
@@ -289,7 +313,6 @@ document.getElementById("btn-enviar").disabled = true;
 
 const campoUpdate = meuJogador === 1 ? { escolhaJ1: acaoSelecionadaIndice } : { escolhaJ2: acaoSelecionadaIndice };
 
-// Usa transação ou verificação pós-update para evitar condições de corrida
 jogoRef.update(campoUpdate).then(() => {
 jogoRef.once("value").then((snapshot) => {
 const dados = snapshot.val();
@@ -371,4 +394,4 @@ if (Date.now() < end) requestAnimationFrame(frame);
 }
 </script>
 </body>
-  </html>
+</html>
